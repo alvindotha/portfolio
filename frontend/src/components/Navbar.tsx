@@ -23,7 +23,7 @@ export function Navbar() {
         <Group justify="space-between" h={56}>
           <Anchor component={Link} href="/" underline="never" c="inherit">
             <Text fw={700} size="lg">
-              lazy-tracker
+              Thalvindo
             </Text>
           </Anchor>
 

@@ -1,4 +1,4 @@
-# Portfolio — lazy-tracker.my.id
+# Portfolio — Thalvindo
 
 > **Note**: This project was developed with >80% AI assistance. The primary focus is on functionality and outcomes rather than code elegance or architectural purity.
 
@@ -7,7 +7,7 @@ Personal portfolio website with a blog, powered by Docker.
 ## Architecture
 
 ```
-                   lazy-tracker.my.id
+                   thalvindo.my.id
                            │
                     Nginx (SSL)
                    ┌───┴───┐
@@ -90,7 +90,7 @@ Then login at http://localhost:3000/admin/login.
 ### Prerequisites (first time on a server)
 
 - Docker & Docker Compose installed
-- Domain (`lazy-tracker.my.id`) pointing to the server's IP
+- Domain (`thalvindo.my.id`) pointing to the server's IP
 
 ### Step-by-step
 
@@ -105,7 +105,7 @@ nano .env   # Set passwords, secrets, admin credentials
 
 # 3. Get SSL certificates (one-time)
 sudo apt install certbot
-sudo certbot certonly --standalone -d lazy-tracker.my.id -d www.lazy-tracker.my.id
+sudo certbot certonly --standalone -d thalvindo.my.id -d www.thalvindo.my.id
 
 # 4. Start everything
 docker compose up -d
@@ -115,7 +115,7 @@ docker compose ps
 # All 4 services should be "Up"
 ```
 
-The site is now live at **https://lazy-tracker.my.id**.
+The site is now live at **https://thalvindo.my.id**.
 
 ### Moving to Another Server
 

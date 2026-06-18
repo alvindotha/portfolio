@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  Container, Title, TextInput, Textarea, Switch, Button, Group, Paper, NumberInput, MultiSelect,
+  Container, Title, TextInput, Textarea, Switch, Button, Group, Paper, NumberInput, TagsInput,
 } from '@mantine/core';
 import { RichTextEditor } from '@/components/RichTextEditor';
 import { api } from '@/lib/api';
@@ -54,15 +54,11 @@ export default function NewProjectPage() {
           <TextInput label="Image URL" value={imageUrl} onChange={(e) => setImageUrl(e.currentTarget.value)} mb="sm" />
           <TextInput label="Project URL" value={projectUrl} onChange={(e) => setProjectUrl(e.currentTarget.value)} mb="sm" />
           <TextInput label="GitHub URL" value={githubUrl} onChange={(e) => setGithubUrl(e.currentTarget.value)} mb="sm" />
-          <MultiSelect
+          <TagsInput
             label="Tech Stack"
-            data={techStack}
             value={techStack}
             onChange={setTechStack}
             placeholder="Type and enter to add"
-            creatable
-            getCreateLabel={(q) => `+ Add ${q}`}
-            onCreate={(q) => { setTechStack((c) => [...c, q]); return q; }}
             mb="sm"
           />
           <NumberInput label="Sort Order" value={sortOrder} onChange={(v) => setSortOrder(Number(v) || 0)} mb="sm" />

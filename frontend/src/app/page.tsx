@@ -58,7 +58,7 @@ export default function Home() {
             <Title order={1} size="3.5rem" fw={700}>
               Hello, I&apos;m{' '}
               <Text component="span" inherit c="dimmed">
-                lazy-tracker
+                Thalvindo
               </Text>
             </Title>
             <Text size="xl" c="dimmed" mt="md" maw={600}>
@@ -182,7 +182,7 @@ export default function Home() {
             Have a question or want to work together? Send me an email.
           </Text>
           <Anchor
-            href="mailto:hello@lazy-tracker.my.id"
+            href="mailto:hello@thalvindo.my.id"
             size="lg"
             c="var(--mantine-color-text)"
             style={{
@@ -191,7 +191,7 @@ export default function Home() {
             }}
             className="hover:opacity-60"
           >
-            hello@lazy-tracker.my.id
+            hello@thalvindo.my.id
           </Anchor>
         </Paper>
       </motion.section>

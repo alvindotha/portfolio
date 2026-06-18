@@ -13,7 +13,7 @@ export function Footer() {
       <Container size="lg" px="md" py="lg">
         <Group justify="space-between">
           <Text size="sm" c="dimmed">
-            &copy; {new Date().getFullYear()} lazy-tracker{' '}
+            &copy; {new Date().getFullYear()} Thalvindo{' '}
             {process.env.NEXT_PUBLIC_APP_VERSION && (
               <Text component="span" size="xs" c="dimmed">
                 v{process.env.NEXT_PUBLIC_APP_VERSION}

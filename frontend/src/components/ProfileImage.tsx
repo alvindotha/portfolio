@@ -41,7 +41,7 @@ export function ProfileImage() {
             height: size,
             borderRadius: '50%',
             overflow: 'hidden',
-            border: '2px solid var(--mantine-color-dark-3)',
+            border: '2px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))',
           }}
         >
           {imgError ? (
@@ -52,8 +52,8 @@ export function ProfileImage() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                background: 'var(--mantine-color-dark-6)',
-                color: 'var(--mantine-color-dark-2)',
+                background: 'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-6))',
+                color: 'light-dark(var(--mantine-color-gray-5), var(--mantine-color-dark-2))',
                 fontSize: 40,
                 fontWeight: 700,
               }}
@@ -62,10 +62,11 @@ export function ProfileImage() {
             </div>
           ) : (
             <Image
-              src="/images/profile.jpg"
+              src="/images/profile.svg"
               alt="Profile"
               width={size}
               height={size}
+              unoptimized
               style={{ objectFit: 'cover', width: '100%', height: '100%' }}
               onError={() => setImgError(true)}
             />
@@ -83,7 +84,7 @@ export function ProfileImage() {
                 position: 'absolute',
                 inset: -6,
                 borderRadius: '50%',
-                border: '1.5px solid var(--mantine-color-dark-2)',
+                border: '1.5px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-2))',
                 pointerEvents: 'none',
               }}
             />
@@ -127,25 +128,26 @@ export function ProfileImage() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    background: 'var(--mantine-color-dark-6)',
-                    color: 'var(--mantine-color-dark-2)',
+                    background: 'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-6))',
+                    color: 'light-dark(var(--mantine-color-gray-5), var(--mantine-color-dark-2))',
                     fontSize: 80,
                     fontWeight: 700,
-                    border: '2px solid var(--mantine-color-dark-2)',
+                    border: '2px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-2))',
                   }}
                 >
                   ?
                 </div>
               ) : (
                 <Image
-                  src="/images/profile.jpg"
+                  src="/images/profile.svg"
                   alt="Profile"
                   width={focusSize}
                   height={focusSize}
+                  unoptimized
                   style={{
                     borderRadius: '50%',
                     objectFit: 'cover',
-                    border: '2px solid var(--mantine-color-dark-2)',
+                    border: '2px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-2))',
                     boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
                   }}
                 />

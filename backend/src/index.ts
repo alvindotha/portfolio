@@ -2,24 +2,30 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import { config } from './config';
-import { migrate, seed } from './db';
-import authRoutes from './routes/auth';
+import { migrate } from './db';
 import postRoutes from './routes/posts';
-import adminRoutes from './routes/admin';
 import projectRoutes from './routes/projects';
-import adminProjectRoutes from './routes/adminProjects';
+import guestbookRoutes from './routes/guestbook';
 
 const app = express();
 
-app.use(helmet());
-app.use(cors());
-app.use(express.json());
+app.set('trust proxy', 1);
 
-app.use('/api/auth', authRoutes);
+app.use(helmet());
+app.use(cors({
+  origin: [
+    'http://localhost:3000',
+    'https://thalvindo.my.id',
+    'https://www.thalvindo.my.id',
+    config.frontendUrl,
+  ].filter(Boolean),
+  credentials: true,
+}));
+app.use(express.json({ limit: '10kb' }));
+
 app.use('/api/posts', postRoutes);
-app.use('/api/admin/posts', adminRoutes);
 app.use('/api/projects', projectRoutes);
-app.use('/api/admin/projects', adminProjectRoutes);
+app.use('/api/guestbook', guestbookRoutes);
 
 app.get('/api/health', (_req, res) => {
   res.json({ data: { status: 'ok' }, error: null });
@@ -28,7 +34,6 @@ app.get('/api/health', (_req, res) => {
 async function start() {
   try {
     await migrate();
-    await seed();
     app.listen(config.port, () => {
       console.log(`[server] Backend running on :${config.port}`);
     });

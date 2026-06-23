@@ -1,5 +1,4 @@
 import '@mantine/core/styles.css';
-import '@mantine/tiptap/styles.css';
 import './globals.css';
 
 import { ColorSchemeScript, MantineProvider } from '@mantine/core';

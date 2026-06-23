@@ -1,36 +1,46 @@
 import { Router, Request, Response } from 'express';
 import { query } from '../db';
+import { getClientIp } from '../utils/ip';
 
 const router = Router();
 
-function getClientIp(req: Request): string {
-  const forwarded = req.headers['x-forwarded-for'];
-  if (typeof forwarded === 'string') return forwarded.split(',')[0].trim();
-  return req.socket.remoteAddress || 'unknown';
-}
-
-// List published posts
-router.get('/', async (_req: Request, res: Response) => {
+router.get('/', async (req: Request, res: Response) => {
   try {
+    const page = Math.max(1, parseInt(req.query.page as string) || 1);
+    const limit = Math.min(50, Math.max(1, parseInt(req.query.limit as string) || 12));
+    const offset = (page - 1) * limit;
+
+    const countResult = await query(
+      "SELECT COUNT(*)::int AS total FROM posts WHERE published = true"
+    );
+    const total = countResult.rows[0].total;
+
     const result = await query(`
       SELECT
         p.id, p.title, p.slug, p.excerpt, p.created_at, p.updated_at,
-        COALESCE(l.like_count, 0)::text AS like_count,
-        COALESCE(v.view_count, 0)::text AS view_count
+        COALESCE(l.like_count, 0)::int AS like_count,
+        COALESCE(v.view_count, 0)::int AS view_count
       FROM posts p
       LEFT JOIN (SELECT post_id, COUNT(*) AS like_count FROM likes GROUP BY post_id) l ON l.post_id = p.id
       LEFT JOIN (SELECT post_id, COUNT(*) AS view_count FROM views GROUP BY post_id) v ON v.post_id = p.id
       WHERE p.published = true
       ORDER BY p.created_at DESC
-    `);
-    res.json({ data: result.rows, error: null });
+      LIMIT $1 OFFSET $2
+    `, [limit, offset]);
+
+    res.json({
+      data: {
+        items: result.rows,
+        meta: { page, limit, total, totalPages: Math.ceil(total / limit) },
+      },
+      error: null,
+    });
   } catch (err) {
     console.error('List posts error:', err);
     res.status(500).json({ data: null, error: 'Internal server error' });
   }
 });
 
-// Get single post by slug
 router.get('/:slug', async (req: Request, res: Response) => {
   try {
     const { slug } = req.params;
@@ -38,8 +48,8 @@ router.get('/:slug', async (req: Request, res: Response) => {
     const result = await query(`
       SELECT
         p.id, p.title, p.slug, p.content, p.excerpt, p.published, p.created_at, p.updated_at,
-        COALESCE(l.like_count, 0)::text AS like_count,
-        COALESCE(v.view_count, 0)::text AS view_count
+        COALESCE(l.like_count, 0)::int AS like_count,
+        COALESCE(v.view_count, 0)::int AS view_count
       FROM posts p
       LEFT JOIN (SELECT post_id, COUNT(*) AS like_count FROM likes GROUP BY post_id) l ON l.post_id = p.id
       LEFT JOIN (SELECT post_id, COUNT(*) AS view_count FROM views GROUP BY post_id) v ON v.post_id = p.id
@@ -65,7 +75,6 @@ router.get('/:slug', async (req: Request, res: Response) => {
   }
 });
 
-// Record a view
 router.post('/:slug/view', async (req: Request, res: Response) => {
   try {
     const { slug } = req.params;
@@ -83,7 +92,7 @@ router.post('/:slug/view', async (req: Request, res: Response) => {
       [postId, ip]
     );
 
-    const count = await query('SELECT COUNT(*)::text AS count FROM views WHERE post_id = $1', [postId]);
+    const count = await query('SELECT COUNT(*)::int AS count FROM views WHERE post_id = $1', [postId]);
     res.json({ data: { view_count: count.rows[0].count }, error: null });
   } catch (err) {
     console.error('Record view error:', err);
@@ -91,7 +100,6 @@ router.post('/:slug/view', async (req: Request, res: Response) => {
   }
 });
 
-// Toggle like
 router.post('/:slug/like', async (req: Request, res: Response) => {
   try {
     const { slug } = req.params;
@@ -118,7 +126,7 @@ router.post('/:slug/like', async (req: Request, res: Response) => {
       liked = true;
     }
 
-    const count = await query('SELECT COUNT(*)::text AS count FROM likes WHERE post_id = $1', [postId]);
+    const count = await query('SELECT COUNT(*)::int AS count FROM likes WHERE post_id = $1', [postId]);
     res.json({ data: { liked, like_count: count.rows[0].count }, error: null });
   } catch (err) {
     console.error('Toggle like error:', err);

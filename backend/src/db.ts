@@ -1,10 +1,14 @@
 import { Pool } from 'pg';
 import { readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
-import bcrypt from 'bcryptjs';
 import { config } from './config';
 
-const pool = new Pool({ connectionString: config.databaseUrl });
+const pool = new Pool({
+  connectionString: config.databaseUrl,
+  max: 10,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 5000,
+});
 
 export async function query(text: string, params?: any[]) {
   const client = await pool.connect();
@@ -42,18 +46,6 @@ export async function migrate(): Promise<void> {
   } finally {
     client.release();
   }
-}
-
-export async function seed(): Promise<void> {
-  const existing = await query('SELECT 1 FROM admins LIMIT 1');
-  if (existing.rows.length > 0) return;
-
-  const hash = await bcrypt.hash(config.adminPassword, 10);
-  await query(
-    'INSERT INTO admins (username, password_hash) VALUES ($1, $2) ON CONFLICT DO NOTHING',
-    [config.adminUsername, hash]
-  );
-  console.log(`[seed] Admin user created: ${config.adminUsername}`);
 }
 
 export default pool;

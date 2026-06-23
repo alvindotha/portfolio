@@ -3,6 +3,7 @@
 import { Card, Text, Group, Anchor } from '@mantine/core';
 import { IconEye, IconHeart } from '@tabler/icons-react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 
 interface PostCardProps {
   slug: string;
@@ -15,45 +16,49 @@ interface PostCardProps {
 
 export function PostCard({ slug, title, excerpt, created_at, like_count, view_count }: PostCardProps) {
   return (
-    <Anchor component={Link} href={`/blog/${slug}`} underline="never">
-      <Card
-        padding="lg"
-        withBorder
-        style={{
-          transition: 'transform 0.15s, box-shadow 0.15s',
-          cursor: 'pointer',
-          height: '100%',
-        }}
-        className="hover:-translate-y-0.5 hover:shadow-lg"
-      >
-        <Text fw={600} size="lg" lineClamp={2} mb="xs">
-          {title}
-        </Text>
-        {excerpt && (
-          <Text size="sm" c="dimmed" lineClamp={3} mb="md">
-            {excerpt}
+    <motion.div
+      whileHover={{ y: -4 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+    >
+      <Anchor component={Link} href={`/blog/${slug}`} underline="never">
+        <Card
+          padding="lg"
+          withBorder
+          style={{
+            cursor: 'pointer',
+            height: '100%',
+          }}
+          className="hover:shadow-lg hover:border-gray-600"
+        >
+          <Text fw={600} size="lg" lineClamp={2} mb="xs">
+            {title}
           </Text>
-        )}
-        <Group justify="space-between" mt="auto">
-          <Text size="xs" c="dimmed">
-            {new Date(created_at).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'short',
-              day: 'numeric',
-            })}
-          </Text>
-          <Group gap="sm">
-            <Group gap={4}>
-              <IconEye size={14} />
-              <Text size="xs">{view_count}</Text>
-            </Group>
-            <Group gap={4}>
-              <IconHeart size={14} />
-              <Text size="xs">{like_count}</Text>
+          {excerpt && (
+            <Text size="sm" c="dimmed" lineClamp={3} mb="md" lh={1.6}>
+              {excerpt}
+            </Text>
+          )}
+          <Group justify="space-between" mt="auto">
+            <Text size="xs" c="dimmed">
+              {new Date(created_at).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+              })}
+            </Text>
+            <Group gap="sm">
+              <Group gap={4}>
+                <IconEye size={14} />
+                <Text size="xs">{view_count}</Text>
+              </Group>
+              <Group gap={4}>
+                <IconHeart size={14} />
+                <Text size="xs">{like_count}</Text>
+              </Group>
             </Group>
           </Group>
-        </Group>
-      </Card>
-    </Anchor>
+        </Card>
+      </Anchor>
+    </motion.div>
   );
 }

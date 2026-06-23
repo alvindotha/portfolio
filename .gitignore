@@ -10,3 +10,7 @@ dist/
 postgres_data/
 *.tsbuildinfo
 next-env.d.ts
+nginx/certs/**/*.pem
+nginx/certs/**/*.key
+**/*.pem
+**/*.key

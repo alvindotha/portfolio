@@ -28,6 +28,10 @@ export function GuestbookForm({ siteKey }: { siteKey?: string }) {
   const [turnstileToken, setTurnstileToken] = useState('');
   const [turnstileKey, setTurnstileKey] = useState(0);
 
+  // Turnstile is only a gate when a site key is configured; with no key the
+  // widget never renders and the button must stay usable.
+  const awaitingCheck = !!siteKey && !turnstileToken;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!message.trim() || submitting) return;
@@ -81,11 +85,27 @@ export function GuestbookForm({ siteKey }: { siteKey?: string }) {
               />
             </div>
           )}
-          <Group justify="space-between">
+          <Group justify="space-between" align="center">
             <Text size="xs" c="dimmed">
-              {message.length}/2000
+              {/* Say why the button is inert, rather than leaving it to be guessed. */}
+              {awaitingCheck ? 'Complete the check above to send' : `${message.length}/2000`}
             </Text>
-            <Button type="submit" loading={submitting} disabled={!!siteKey && !turnstileToken}>
+            <Button
+              type="submit"
+              loading={submitting}
+              disabled={awaitingCheck}
+              styles={{
+                root: {
+                  // The theme's primary colour is a pale grey, so a normal
+                  // enabled button already looks washed out — close enough to
+                  // Mantine's disabled styling that the two were hard to tell
+                  // apart once the Turnstile gate was added. Make the inert
+                  // state unmistakably inert.
+                  opacity: awaitingCheck ? 0.4 : 1,
+                  cursor: awaitingCheck ? 'not-allowed' : undefined,
+                },
+              }}
+            >
               {success ? 'Sent!' : 'Send'}
             </Button>
           </Group>

@@ -94,6 +94,11 @@ export function GuestbookForm({ siteKey }: { siteKey?: string }) {
               type="submit"
               loading={submitting}
               disabled={awaitingCheck}
+              // The theme's primaryColor is gray at shade 5 (#adb5bd), so a
+              // filled Button comes out near-white — which reads as disabled
+              // rather than as the primary action. The accent palette exists in
+              // the theme for exactly this, so the live button looks live.
+              color="accent"
               styles={{
                 root: {
                   // The theme's primary colour is a pale grey, so a normal
@@ -101,7 +106,7 @@ export function GuestbookForm({ siteKey }: { siteKey?: string }) {
                   // Mantine's disabled styling that the two were hard to tell
                   // apart once the Turnstile gate was added. Make the inert
                   // state unmistakably inert.
-                  opacity: awaitingCheck ? 0.4 : 1,
+                  opacity: awaitingCheck ? 0.35 : 1,
                   cursor: awaitingCheck ? 'not-allowed' : undefined,
                 },
               }}

@@ -93,7 +93,7 @@ export function HomeContent({
               </Text>
             </Title>
             <Text size="xl" c="dimmed" mt="md" maw={600} lh={1.6}>
-              Developer &amp; problem solver. I build functional applications.
+              Developer &amp; problem solver. I build functional applications &mdash; and run them myself, on a home server in the next room.
             </Text>
             <Group mt="lg">
               <motion.div

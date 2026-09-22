@@ -32,11 +32,14 @@ export interface ProjectSummary {
   techStack: string[];
   projectUrl: string;
   githubUrl: string;
+  imageUrl: string;
+  likeCount: number;
+  viewCount: number;
 }
 
 export interface ProjectDetail extends ProjectSummary {
   content: string;
-  imageUrl: string;
+  hasLiked: boolean;
 }
 
 export interface GuestbookEntry {
@@ -129,11 +132,26 @@ export async function getProjects(page = 1): Promise<Paginated<ProjectSummary>> 
         techStack: true,
         projectUrl: true,
         githubUrl: true,
+        imageUrl: true,
+        _count: { select: { likes: true, views: true } },
       },
     }),
   ]);
 
-  return paginate(rows, current, PAGE_SIZE, total);
+  const items = rows.map((p) => ({
+    id: p.id,
+    title: p.title,
+    slug: p.slug,
+    description: p.description,
+    techStack: p.techStack,
+    projectUrl: p.projectUrl,
+    githubUrl: p.githubUrl,
+    imageUrl: p.imageUrl,
+    likeCount: p._count.likes,
+    viewCount: p._count.views,
+  }));
+
+  return paginate(items, current, PAGE_SIZE, total);
 }
 
 export async function getProject(slug: string): Promise<ProjectDetail | null> {
@@ -149,9 +167,30 @@ export async function getProject(slug: string): Promise<ProjectDetail | null> {
       techStack: true,
       projectUrl: true,
       githubUrl: true,
+      _count: { select: { likes: true, views: true } },
     },
   });
-  return project;
+  if (!project) return null;
+
+  const liked = await prisma.like.findUnique({
+    where: { projectId_ipAddress: { projectId: project.id, ipAddress: getClientIp() } },
+    select: { id: true },
+  });
+
+  return {
+    id: project.id,
+    title: project.title,
+    slug: project.slug,
+    description: project.description,
+    content: project.content,
+    imageUrl: project.imageUrl,
+    techStack: project.techStack,
+    projectUrl: project.projectUrl,
+    githubUrl: project.githubUrl,
+    likeCount: project._count.likes,
+    viewCount: project._count.views,
+    hasLiked: liked !== null,
+  };
 }
 
 export async function getGuestbookEntries(page = 1): Promise<Paginated<GuestbookEntry>> {

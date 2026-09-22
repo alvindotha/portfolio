@@ -3,11 +3,13 @@
 import { Reactions } from '@/components/Reactions';
 import { recordView, toggleLike } from './actions';
 
-export function PostReactions(props: {
+export function ProjectReactions(props: {
   slug: string;
   initialLiked: boolean;
   initialLikeCount: number;
   initialViewCount: number;
 }) {
-  return <Reactions {...props} noun="post" recordView={recordView} toggleLike={toggleLike} />;
+  return (
+    <Reactions {...props} noun="project" recordView={recordView} toggleLike={toggleLike} />
+  );
 }

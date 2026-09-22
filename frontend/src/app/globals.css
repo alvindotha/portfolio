@@ -72,7 +72,9 @@ body {
    no component to constrain them. */
 .tiptap-content img {
   display: block;
-  max-width: 100%;
+  /* Screenshots are captured at 2x, so at full width they dominate the page and
+     push the prose apart. Cap them well below the column and centre instead. */
+  max-width: min(100%, 460px);
   height: auto;
   border-radius: var(--mantine-radius-md);
   margin: 1.5rem auto;

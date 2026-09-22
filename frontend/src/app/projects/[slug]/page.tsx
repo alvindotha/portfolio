@@ -4,6 +4,7 @@ import { Container, Title, Text, Group, Badge, Anchor, Paper } from '@mantine/co
 import { IconExternalLink, IconBrandGithub, IconArrowLeft } from '@tabler/icons-react';
 import { getProject } from '@/lib/queries';
 import { FadeIn } from '@/components/FadeIn';
+import { ProjectReactions } from './ProjectReactions';
 
 export const dynamic = 'force-dynamic';
 
@@ -83,6 +84,15 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
         ) : (
           <Text c="dimmed">{project.description}</Text>
         )}
+      </FadeIn>
+
+      <FadeIn delay={0.3}>
+        <ProjectReactions
+          slug={project.slug}
+          initialLiked={project.hasLiked}
+          initialLikeCount={project.likeCount}
+          initialViewCount={project.viewCount}
+        />
       </FadeIn>
     </Container>
   );

@@ -9,12 +9,12 @@ interface PostCardProps {
   slug: string;
   title: string;
   excerpt: string;
-  created_at: string;
-  like_count: string;
-  view_count: string;
+  createdAt: string;
+  likeCount: number;
+  viewCount: number;
 }
 
-export function PostCard({ slug, title, excerpt, created_at, like_count, view_count }: PostCardProps) {
+export function PostCard({ slug, title, excerpt, createdAt, likeCount, viewCount }: PostCardProps) {
   return (
     <motion.div
       whileHover={{ y: -4 }}
@@ -40,7 +40,7 @@ export function PostCard({ slug, title, excerpt, created_at, like_count, view_co
           )}
           <Group justify="space-between" mt="auto">
             <Text size="xs" c="dimmed">
-              {new Date(created_at).toLocaleDateString('en-US', {
+              {new Date(createdAt).toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'short',
                 day: 'numeric',
@@ -49,11 +49,11 @@ export function PostCard({ slug, title, excerpt, created_at, like_count, view_co
             <Group gap="sm">
               <Group gap={4}>
                 <IconEye size={14} />
-                <Text size="xs">{view_count}</Text>
+                <Text size="xs">{viewCount}</Text>
               </Group>
               <Group gap={4}>
                 <IconHeart size={14} />
-                <Text size="xs">{like_count}</Text>
+                <Text size="xs">{likeCount}</Text>
               </Group>
             </Group>
           </Group>

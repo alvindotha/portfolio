@@ -9,12 +9,12 @@ interface ProjectCardProps {
   slug: string;
   title: string;
   description: string;
-  tech_stack: string[];
-  project_url?: string;
-  github_url?: string;
+  techStack: string[];
+  projectUrl?: string;
+  githubUrl?: string;
 }
 
-export function ProjectCard({ slug, title, description, tech_stack, project_url, github_url }: ProjectCardProps) {
+export function ProjectCard({ slug, title, description, techStack, projectUrl, githubUrl }: ProjectCardProps) {
   return (
     <motion.div
       whileHover={{ y: -4 }}
@@ -41,9 +41,9 @@ export function ProjectCard({ slug, title, description, tech_stack, project_url,
           </Text>
         </Anchor>
 
-        {tech_stack && tech_stack.length > 0 && (
+        {techStack.length > 0 && (
           <Group gap={4} mb="md">
-            {tech_stack.map((tech) => (
+            {techStack.map((tech) => (
               <Badge key={tech} variant="light" size="sm">
                 {tech}
               </Badge>
@@ -55,13 +55,13 @@ export function ProjectCard({ slug, title, description, tech_stack, project_url,
           <Anchor component={Link} href={`/projects/${slug}`} size="sm" c="dimmed">
             Details &rarr;
           </Anchor>
-          {project_url && (
-            <Anchor href={project_url} target="_blank" rel="noopener noreferrer" size="sm" c="dimmed">
+          {projectUrl && (
+            <Anchor href={projectUrl} target="_blank" rel="noopener noreferrer" size="sm" c="dimmed">
               <IconExternalLink size={14} />
             </Anchor>
           )}
-          {github_url && (
-            <Anchor href={github_url} target="_blank" rel="noopener noreferrer" size="sm" c="dimmed">
+          {githubUrl && (
+            <Anchor href={githubUrl} target="_blank" rel="noopener noreferrer" size="sm" c="dimmed">
               <IconBrandGithub size={14} />
             </Anchor>
           )}

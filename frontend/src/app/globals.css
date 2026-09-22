@@ -66,3 +66,26 @@ body {
   font-size: 0.9em;
 }
 .tiptap-content a { color: var(--mantine-color-anchor); text-decoration: underline; }
+
+/* Images in post/project bodies. Without max-width these overflow the column
+   and force horizontal scroll on mobile — the content is raw HTML, so there is
+   no component to constrain them. */
+.tiptap-content img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--mantine-radius-md);
+  margin: 1.5rem auto;
+}
+.tiptap-content figure {
+  margin: 1.5rem 0;
+}
+.tiptap-content figure img {
+  margin: 0 auto 0.5rem;
+}
+.tiptap-content figcaption {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--mantine-color-dimmed);
+  line-height: 1.5;
+}

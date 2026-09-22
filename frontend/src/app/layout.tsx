@@ -5,13 +5,16 @@ import { ColorSchemeScript, MantineProvider } from '@mantine/core';
 import { theme } from '@/theme';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
+import { getAppVersion, getContactLinks } from '@/lib/queries';
 
 export const metadata = {
   title: 'Thalvindo',
   description: 'Personal portfolio and blog',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const [contact, appVersion] = await Promise.all([getContactLinks(), getAppVersion()]);
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -28,7 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           >
             <Navbar />
             <main style={{ flex: 1 }}>{children}</main>
-            <Footer />
+            <Footer contact={contact} appVersion={appVersion} />
           </div>
         </MantineProvider>
       </body>

@@ -1,0 +1,116 @@
+// Portfolio schema — single source of truth for the database.
+// Tables use snake_case to match the SQL conventions of the original schema.
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String   @db.VarChar(255)
+  slug      String   @unique @db.VarChar(255)
+  content   String   @default("")
+  excerpt   String   @default("") @db.VarChar(500)
+  published Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  likes Like[]
+  views View[]
+
+  @@index([published])
+  @@map("posts")
+}
+
+model Like {
+  id        Int      @id @default(autoincrement())
+  postId    Int      @map("post_id")
+  ipAddress String   @map("ip_address") @db.VarChar(45)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, ipAddress])
+  @@index([postId])
+  @@map("likes")
+}
+
+model View {
+  id        Int      @id @default(autoincrement())
+  postId    Int      @map("post_id")
+  ipAddress String   @map("ip_address") @db.VarChar(45)
+  viewedAt  DateTime @default(now()) @map("viewed_at")
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, ipAddress])
+  @@index([postId])
+  @@map("views")
+}
+
+model Project {
+  id          Int      @id @default(autoincrement())
+  title       String   @db.VarChar(255)
+  slug        String   @unique @db.VarChar(255)
+  description String   @default("")
+  content     String   @default("")
+  imageUrl    String   @default("") @map("image_url") @db.VarChar(500)
+  projectUrl  String   @default("") @map("project_url") @db.VarChar(500)
+  githubUrl   String   @default("") @map("github_url") @db.VarChar(500)
+  techStack   String[] @default([]) @map("tech_stack")
+  sortOrder   Int      @default(0) @map("sort_order")
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@index([published])
+  @@index([sortOrder])
+  @@map("projects")
+}
+
+model GuestbookEntry {
+  id        Int      @id @default(autoincrement())
+  name      String   @default("Anonymous") @db.VarChar(100)
+  message   String
+  ipAddress String   @map("ip_address") @db.VarChar(45)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([createdAt(sort: Desc)])
+  @@map("guestbook_entries")
+}
+
+/// Work history shown on the homepage. Added and edited in Prisma Studio —
+/// the section is hidden entirely while there are no published rows.
+model Experience {
+  id          Int       @id @default(autoincrement())
+  company     String    @db.VarChar(200)
+  role        String    @db.VarChar(200)
+  description String    @default("")
+  location    String    @default("") @db.VarChar(200)
+  url         String    @default("") @db.VarChar(500)
+  startDate   DateTime  @map("start_date") @db.Date
+  /// null means "present"
+  endDate     DateTime? @map("end_date") @db.Date
+  published   Boolean   @default(true)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  @@index([startDate(sort: Desc)])
+  @@map("experiences")
+}
+
+/// Editable site-wide values, changed in Prisma Studio without a deploy.
+/// Keys currently in use: `contact_email`, `app_version`.
+model SiteSetting {
+  key       String   @id @db.VarChar(100)
+  value     String
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("site_settings")
+}

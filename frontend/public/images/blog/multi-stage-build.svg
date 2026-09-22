@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 300" width="880" height="300" role="img" aria-label="Multi-stage Docker build: deps, builder and runner stages">
+  <style>
+    .panel { fill: #f8f9fa; stroke: #dee2e6; }
+    .stage { fill: #ffffff; stroke: #ced4da; }
+    .ship  { fill: #ffffff; stroke: #74c0fc; }
+    .t     { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    .name  { font-size: 15px; font-weight: 600; fill: #212529; }
+    .tag   { font-size: 10px; font-weight: 600; fill: #868e96; letter-spacing: 0.06em; }
+    .item  { font-size: 12px; fill: #495057; }
+    .sub   { font-size: 12px; fill: #868e96; }
+    .keep  { font-size: 11px; font-weight: 600; fill: #1c7ed6; }
+    .arrow { stroke: #adb5bd; stroke-width: 1.5; fill: none; }
+  </style>
+  <defs>
+    <marker id="b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#adb5bd"/>
+    </marker>
+  </defs>
+
+  <rect class="panel" x="0.5" y="0.5" width="879" height="299" rx="10"/>
+  <text class="t name" x="28" y="36" style="font-size:16px">Multi-stage build</text>
+  <text class="t sub" x="28" y="56">Build tools stay behind; only the runtime is shipped</text>
+
+  <rect class="stage" x="28" y="86" width="240" height="128" rx="8"/>
+  <text class="t tag"  x="48" y="110">STAGE 1</text>
+  <text class="t name" x="48" y="132">deps</text>
+  <text class="t item" x="48" y="156">npm ci</text>
+  <text class="t sub"  x="48" y="176">full node_modules,</text>
+  <text class="t sub"  x="48" y="192">dev dependencies included</text>
+
+  <rect class="stage" x="320" y="86" width="240" height="128" rx="8"/>
+  <text class="t tag"  x="340" y="110">STAGE 2</text>
+  <text class="t name" x="340" y="132">builder</text>
+  <text class="t item" x="340" y="156">prisma generate</text>
+  <text class="t item" x="340" y="176">next build</text>
+  <text class="t sub"  x="340" y="196">emits .next/standalone</text>
+
+  <rect class="ship" x="612" y="86" width="240" height="128" rx="8"/>
+  <text class="t tag"  x="632" y="110">STAGE 3 — SHIPPED</text>
+  <text class="t name" x="632" y="132">runner</text>
+  <text class="t item" x="632" y="156">standalone server + static</text>
+  <text class="t item" x="632" y="176">sharp, prisma CLI</text>
+  <text class="t keep" x="632" y="196">migrate deploy on start</text>
+
+  <path class="arrow" d="M268 150 H316" marker-end="url(#b)"/>
+  <path class="arrow" d="M560 150 H608" marker-end="url(#b)"/>
+
+  <text class="t sub" x="440" y="256" text-anchor="middle">Standalone output traces only what the server imports — but not sharp or the Prisma</text>
+  <text class="t sub" x="440" y="274" text-anchor="middle">engine, so the runner stage copies those in explicitly.</text>
+</svg>

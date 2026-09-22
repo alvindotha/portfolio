@@ -6,77 +6,124 @@
 
 ```
 Nginx (SSL termination)
-  ├── / → Next.js frontend (:3000)
-  ├── /api/* → Express backend (:4000)
-  │               └── PostgreSQL (:5432)
-  └── /projects → links to /api/projects
+  └── / → Next.js app (:3000)
+            └── Prisma → PostgreSQL (:5432)
 ```
 
-4 Docker services + 1 Nginx reverse proxy, orchestrated via `docker compose`.
+There is **no separate backend service**. The Next.js app owns the database:
+server components query PostgreSQL through Prisma directly, and every mutation
+is a server action. Nothing goes over HTTP to fetch its own data.
 
 ## Tech Stack
 
 | Layer | Tech |
 |---|---|
-| Frontend | Next.js 14 (App Router) + Mantine UI v7 + Tailwind CSS + Framer Motion |
-| Backend | Express.js + TypeScript + pg (raw SQL) |
+| App | Next.js 14 (App Router) + Mantine UI v7 + Tailwind CSS + Framer Motion |
+| Data | Prisma ORM (schema, migrations, typed client) |
 | Database | PostgreSQL 16 |
-| Rich Text | TipTap (`@mantine/tiptap`) |
-| Auth | JWT (bcryptjs + jsonwebtoken) |
+| Anti-spam | Cloudflare Turnstile + a regex moderation filter |
 | Container | Docker Compose |
-| Reverse Proxy | Nginx (with Let's Encrypt SSL) |
+| Reverse Proxy | Nginx (Let's Encrypt SSL in production) |
 
 ## Directories
 
-- `frontend/` — Next.js app (portfolio, blog, projects, admin panel)
-- `backend/` — Express API server
-- `nginx/` — Nginx reverse proxy config
-- `backend/migrations/` — SQL migration files
-- `backend/seeds/` — Seed scripts (admin user creation)
+- `frontend/` — the entire application: UI, data access, schema, migrations
+- `frontend/prisma/` — `schema.prisma`, `migrations/`, `seed.ts`
+- `nginx/` — `local.conf` (plain HTTP) and `default.conf` (production TLS)
+
+**Migrations live in exactly one place: `frontend/prisma/migrations/`.**
+Never add SQL migration files anywhere else.
 
 ## Environment Variables
 
+Root `.env` drives docker compose; `frontend/.env` drives local `npm run dev`.
+
 | Variable | Used By | Description |
 |---|---|---|
-| `NEXT_PUBLIC_API_URL` | Frontend | Backend API base URL |
-| `NEXT_PUBLIC_APP_VERSION` | Frontend | Displayed in footer |
-| `NEXT_PUBLIC_APP_ENV` | Frontend | `development` or `production` (hides admin in prod) |
-| `DATABASE_URL` | Backend | PostgreSQL connection string |
-| `JWT_SECRET` | Backend | JWT signing key |
-| `ADMIN_USERNAME/PASSWORD` | Backend | Seed admin credentials |
-| `NODE_ENV` | Backend | `development` or `production` (disables admin API in prod) |
+| `DATABASE_URL` | Next.js app | PostgreSQL connection string (host `localhost` for dev, `db` in compose) |
+| `DATABASE_URL_DOCKER` | compose | The `db`-host URL injected into the frontend container |
+| `POSTGRES_DB/USER/PASSWORD/PORT` | compose | Database service settings |
+| `NGINX_CONF` | compose | Which vhost to mount: `./nginx/local.conf` or `./nginx/default.conf` |
+| `HTTP_PORT` / `HTTPS_PORT` | compose | Host ports for nginx (8090/8453 local, 80/443 production) |
+| `NEXT_PUBLIC_APP_VERSION` | app | Fallback footer version; the `app_version` row in `site_settings` takes precedence |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | app (public) | Turnstile widget key; blank hides the widget |
+| `TURNSTILE_SECRET_KEY` | app (secret) | Turnstile verification; blank skips verification |
 
 ## Quick Start
 
 ```bash
-cp .env.example .env   # edit secrets
-docker compose up -d   # starts all services
+cp .env.example .env
+cd frontend && cp .env.example .env && npm install
+
+docker compose up -d db          # Postgres on :5432
+cd frontend
+npm run db:deploy                # apply migrations
+npm run db:seed                  # sample posts + projects
+npm run dev                      # http://localhost:3000
 ```
+
+Full containerized stack (app + nginx), for verifying a production-like build:
+
+```bash
+docker compose --profile full up -d --build   # http://localhost:8090
+```
+
+## Working with the Database
+
+| Command (in `frontend/`) | Purpose |
+|---|---|
+| `npm run db:migrate` | Create + apply a migration after editing `schema.prisma` |
+| `npm run db:deploy` | Apply existing migrations (CI / production / containers) |
+| `npm run db:seed` | Upsert the sample posts and projects |
+| `npm run db:reset` | Drop, re-migrate, re-seed |
+| `npm run db:studio` | Prisma Studio — the GUI for editing posts and projects |
+
+Content is authored through **Prisma Studio**, not an admin panel. Post and
+project `content` is HTML, rendered with `dangerouslySetInnerHTML` under the
+`.tiptap-content` class.
+
+`site_settings` is the key/value table for things that change without a deploy:
+`contact_email`, `contact_phone`, `linkedin_url`, `github_url`, `gitlab_url`,
+`youtube_url` and `app_version`. Read them through the helpers in
+`src/lib/queries.ts` (`getContactLinks`, `getAppVersion`) and add new keys to the
+`SETTINGS` map there rather than querying `siteSetting` directly.
+
+`getContactLinks` fetches every contact row in one query and returns blanks for
+the rows that are empty. `src/components/ContactLinks.tsx` owns the channel list
+(icon, href, label) and drops blank channels, so the footer and the homepage card
+render the same set without either one enumerating the channels itself.
 
 ## Conventions
 
 - TypeScript everywhere, strict mode
-- Raw SQL via `pg` (no ORM)
+- Prisma models are camelCase in TS and `@map`ped to snake_case columns
+- Reads live in `src/lib/queries.ts` (server-only); writes are server actions in `actions.ts` next to the page that uses them
+- Pages are server components; interactivity is pushed into small `'use client'` islands
+- Data-driven routes set `export const dynamic = 'force-dynamic'`
 - Mantine components + Tailwind utility classes for styling
 - Dark theme with slate/monochrome palette
-- API responses: `{ data: ..., error: ... }` format
-- JWT in Authorization header (Bearer token)
-- View/like tracking by IP address (unique per IP)
-- Admin panel only accessible in development mode
+- View/like tracking is unique per IP (`@@unique([postId, ipAddress])`)
 
-## Next Session: Deploy to Production
+## Deploying to Production
 
-1. **Buy VPS** — minimum 1GB RAM, Docker-compatible (Ubuntu 22.04+ recommended)
-2. **Set DNS** — A record: `thalvindo.my.id` and `www.thalvindo.my.id` → VPS IP
-3. **SSH into VPS**, install Docker: `curl -fsSL https://get.docker.com | sh`
-4. **Clone repo**: `git clone git@gitlab.com:thalvindo/portfolio.git && cd portfolio`
-5. **Set up `.env`** — copy from `.env.production` backup (keep VPS-air-gapped)
-6. **Get SSL cert**:
+1. **VPS** — minimum 1GB RAM, Docker-compatible (Ubuntu 22.04+ recommended)
+2. **DNS** — A record: `thalvindo.my.id` and `www.thalvindo.my.id` → VPS IP
+3. **Install Docker**: `curl -fsSL https://get.docker.com | sh`
+4. **Clone**: `git clone git@gitlab.com:thalvindo/portfolio.git && cd portfolio`
+5. **`.env`** — set a real `POSTGRES_PASSWORD`, matching `DATABASE_URL_DOCKER`,
+   Turnstile keys, and:
+   ```
+   NGINX_CONF=./nginx/default.conf
+   HTTP_PORT=80
+   HTTPS_PORT=443
+   ```
+6. **SSL cert**:
    ```bash
    docker run -it --rm -p 80:80 \
      -v /etc/letsencrypt:/etc/letsencrypt \
      certbot/certbot certonly --standalone \
      -d thalvindo.my.id -d www.thalvindo.my.id
    ```
-7. **Deploy**: `docker compose up -d`
-8. **Verify**: visit `https://thalvindo.my.id` — blog + projects should render with content
+7. **Deploy**: `docker compose --profile full up -d --build`
+   (the frontend container runs `prisma migrate deploy` on startup)
+8. **Verify**: visit `https://thalvindo.my.id`

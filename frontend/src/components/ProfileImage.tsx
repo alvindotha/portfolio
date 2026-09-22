@@ -62,11 +62,11 @@ export function ProfileImage() {
             </div>
           ) : (
             <Image
-              src="/images/profile.svg"
-              alt="Profile"
-              width={size}
-              height={size}
-              unoptimized
+              src="/images/profile.jpg"
+              alt="Thalvindo"
+              width={size * 2}
+              height={size * 2}
+              priority
               style={{ objectFit: 'cover', width: '100%', height: '100%' }}
               onError={() => setImgError(true)}
             />
@@ -139,11 +139,10 @@ export function ProfileImage() {
                 </div>
               ) : (
                 <Image
-                  src="/images/profile.svg"
-                  alt="Profile"
+                  src="/images/profile.jpg"
+                  alt="Thalvindo"
                   width={focusSize}
                   height={focusSize}
-                  unoptimized
                   style={{
                     borderRadius: '50%',
                     objectFit: 'cover',

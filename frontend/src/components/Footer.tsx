@@ -1,8 +1,16 @@
 'use client';
 
-import { Container, Text, Group, Anchor } from '@mantine/core';
+import { Container, Text, Group } from '@mantine/core';
+import { ContactLinks } from '@/components/ContactLinks';
+import type { ContactLinks as ContactLinksData } from '@/lib/queries';
 
-export function Footer() {
+export function Footer({
+  contact,
+  appVersion,
+}: {
+  contact: ContactLinksData;
+  appVersion: string;
+}) {
   const year = new Date().getFullYear();
 
   return (
@@ -16,17 +24,13 @@ export function Footer() {
         <Group justify="space-between">
           <Text size="sm" c="dimmed">
             &copy; {year} Thalvindo
-            {process.env.NEXT_PUBLIC_APP_VERSION && (
+            {appVersion && (
               <Text component="span" size="xs" c="dimmed" ml={4}>
-                v{process.env.NEXT_PUBLIC_APP_VERSION}
+                v{appVersion}
               </Text>
             )}
           </Text>
-          <Group gap="md">
-            <Anchor href="mailto:hello@thalvindo.my.id" size="sm" c="dimmed">
-              Email
-            </Anchor>
-          </Group>
+          <ContactLinks contact={contact} size={16} gap="sm" />
         </Group>
       </Container>
     </footer>

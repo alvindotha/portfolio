@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 250" width="880" height="250" role="img" aria-label="Request path: browser to nginx to Next.js to PostgreSQL">
+  <style>
+    .panel { fill: #f8f9fa; stroke: #dee2e6; }
+    .box   { fill: #ffffff; stroke: #ced4da; }
+    .db    { fill: #ffffff; stroke: #74c0fc; }
+    .t     { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    .name  { font-size: 16px; font-weight: 600; fill: #212529; }
+    .sub   { font-size: 12px; fill: #868e96; }
+    .port  { font-size: 11px; font-weight: 600; fill: #1c7ed6; }
+    .lbl   { font-size: 11px; fill: #868e96; }
+    .arrow { stroke: #adb5bd; stroke-width: 1.5; fill: none; }
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#adb5bd"/>
+    </marker>
+  </defs>
+
+  <rect class="panel" x="0.5" y="0.5" width="879" height="249" rx="10"/>
+  <text class="t name" x="28" y="36">Request path</text>
+  <text class="t sub" x="28" y="56">One app process — no separate API service</text>
+
+  <rect class="box" x="28"  y="90" width="175" height="86" rx="8"/>
+  <text class="t name" x="115.5" y="126" text-anchor="middle">Browser</text>
+  <text class="t sub"  x="115.5" y="146" text-anchor="middle">thalvindo.my.id</text>
+
+  <rect class="box" x="243" y="90" width="175" height="86" rx="8"/>
+  <text class="t name" x="330.5" y="120" text-anchor="middle">Nginx</text>
+  <text class="t port" x="330.5" y="139" text-anchor="middle">:443</text>
+  <text class="t sub"  x="330.5" y="157" text-anchor="middle">TLS termination</text>
+
+  <rect class="box" x="458" y="90" width="175" height="86" rx="8"/>
+  <text class="t name" x="545.5" y="120" text-anchor="middle">Next.js</text>
+  <text class="t port" x="545.5" y="139" text-anchor="middle">:3000</text>
+  <text class="t sub"  x="545.5" y="157" text-anchor="middle">server components</text>
+
+  <rect class="db"  x="673" y="90" width="175" height="86" rx="8"/>
+  <text class="t name" x="760.5" y="120" text-anchor="middle">PostgreSQL</text>
+  <text class="t port" x="760.5" y="139" text-anchor="middle">:5432</text>
+  <text class="t sub"  x="760.5" y="157" text-anchor="middle">posts · projects</text>
+
+  <path class="arrow" d="M203 133 H239" marker-end="url(#a)"/>
+  <text class="t lbl" x="221" y="124" text-anchor="middle">https</text>
+
+  <path class="arrow" d="M418 133 H454" marker-end="url(#a)"/>
+  <text class="t lbl" x="436" y="124" text-anchor="middle">proxy</text>
+
+  <path class="arrow" d="M633 133 H669" marker-end="url(#a)"/>
+  <text class="t lbl" x="651" y="124" text-anchor="middle">Prisma</text>
+
+  <text class="t sub" x="440" y="215" text-anchor="middle">Pages query the database directly on the server — the browser never calls an API.</text>
+</svg>

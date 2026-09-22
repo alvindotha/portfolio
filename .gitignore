@@ -1,13 +1,12 @@
 node_modules/
-dist/
 .next/
 **/.env
+# Timestamped backups of .env hold the same credentials.
+**/.env.bak-*
 **/.env.local
 **/.env.*.local
-.env.production
 *.log
 .DS_Store
-postgres_data/
 *.tsbuildinfo
 next-env.d.ts
 nginx/certs/**/*.pem

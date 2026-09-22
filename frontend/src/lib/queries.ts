@@ -243,13 +243,24 @@ export const DEFAULT_CONTACT_EMAIL = 'thalvindo@gmail.com';
 /** Used only when the row is missing and no build-time version was injected. */
 export const DEFAULT_APP_VERSION = '0.1.0';
 
+/**
+ * Settings are read from the root layout, so every page depends on them — and
+ * `/_not-found` is prerendered at build time, when no database exists at all.
+ * A failed lookup therefore falls back rather than throwing: the build works
+ * without a database, and a runtime blip degrades the footer instead of
+ * returning 500 for the whole site.
+ */
 async function getSetting(key: string, fallback: string): Promise<string> {
-  const row = await prisma.siteSetting.findUnique({
-    where: { key },
-    select: { value: true },
-  });
-  const value = row?.value.trim();
-  return value ? value : fallback;
+  try {
+    const row = await prisma.siteSetting.findUnique({
+      where: { key },
+      select: { value: true },
+    });
+    const value = row?.value.trim();
+    return value ? value : fallback;
+  } catch {
+    return fallback;
+  }
 }
 
 /**
@@ -278,10 +289,16 @@ export async function getContactLinks(): Promise<ContactLinks> {
     SETTINGS.youtubeUrl,
   ];
 
-  const rows = await prisma.siteSetting.findMany({
-    where: { key: { in: keys } },
-    select: { key: true, value: true },
-  });
+  // Same reasoning as getSetting: never let a missing database break the layout.
+  let rows: { key: string; value: string }[] = [];
+  try {
+    rows = await prisma.siteSetting.findMany({
+      where: { key: { in: keys } },
+      select: { key: true, value: true },
+    });
+  } catch {
+    rows = [];
+  }
 
   const values = new Map(rows.map((r) => [r.key, r.value.trim()]));
   const get = (key: string) => values.get(key) ?? '';

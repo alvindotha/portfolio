@@ -1,0 +1,56 @@
+# Push to master -> the home server rebuilds and restarts itself.
+#
+# The runner is a self-hosted one on that machine, so nothing needs to reach in
+# from outside: the box pulls its own code. DEPLOY_DIR is a repo variable so the
+# checkout can be moved without editing this file.
+name: Deploy
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, portfolio]
+    env:
+      DEPLOY_DIR: ${{ vars.DEPLOY_DIR || '/home/tha/Documents/Projects/portfolio' }}
+    steps:
+      - name: Update the server checkout
+        run: |
+          cd "$DEPLOY_DIR"
+          git fetch --quiet origin master
+          # .env and docker-compose.override.yml are gitignored, so a hard
+          # reset leaves the secrets and the port bindings alone.
+          git checkout --quiet master
+          git reset --hard "$GITHUB_SHA"
+
+      - name: Build and restart
+        working-directory: ${{ env.DEPLOY_DIR }}
+        # Migrations run as the frontend container starts, so a failed migration
+        # fails the deploy here rather than silently later.
+        run: docker compose up -d --build --remove-orphans --wait --wait-timeout 300
+
+      - name: Health check
+        working-directory: ${{ env.DEPLOY_DIR }}
+        run: |
+          docker compose ps
+          for i in $(seq 1 10); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 http://127.0.0.1:8083/ || true)
+            [ "$code" = "200" ] && { echo "site responding: $code"; exit 0; }
+            sleep 3
+          done
+          echo "site did not return 200"; exit 1
+
+      - name: Show logs on failure
+        if: failure()
+        working-directory: ${{ env.DEPLOY_DIR }}
+        run: docker compose logs --tail 60
+
+      - name: Remove superseded images
+        if: success()
+        run: docker image prune -f

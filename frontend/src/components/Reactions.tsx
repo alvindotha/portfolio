@@ -19,6 +19,8 @@ export function Reactions({
   initialViewCount,
   recordView,
   toggleLike,
+  mt = 'xl',
+  mb,
 }: {
   slug: string;
   noun: string;
@@ -27,6 +29,8 @@ export function Reactions({
   initialViewCount: number;
   recordView: (slug: string) => Promise<number | null>;
   toggleLike: (slug: string) => Promise<{ liked: boolean; likeCount: number } | null>;
+  mt?: string;
+  mb?: string;
 }) {
   const [liked, setLiked] = useState(initialLiked);
   const [likeCount, setLikeCount] = useState(initialLikeCount);
@@ -51,7 +55,7 @@ export function Reactions({
   };
 
   return (
-    <Group mt="xl" gap="lg">
+    <Group mt={mt} mb={mb} gap="xl" align="center">
       <Group gap={4}>
         <IconEye size={16} />
         <Text size="sm" c="dimmed">

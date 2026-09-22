@@ -8,6 +8,8 @@ export function ProjectReactions(props: {
   initialLiked: boolean;
   initialLikeCount: number;
   initialViewCount: number;
+  mt?: string;
+  mb?: string;
 }) {
   return (
     <Reactions {...props} noun="project" recordView={recordView} toggleLike={toggleLike} />

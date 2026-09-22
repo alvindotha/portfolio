@@ -40,6 +40,8 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           initialLiked={post.hasLiked}
           initialLikeCount={post.likeCount}
           initialViewCount={post.viewCount}
+          mt="md"
+          mb="xl"
         />
       </FadeIn>
 

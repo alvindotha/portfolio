@@ -39,23 +39,20 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
           {project.title}
         </Title>
       </FadeIn>
-
-      <ProjectReactions
-
-        slug={project.slug}
-
-        initialLiked={project.hasLiked}
-
-        initialLikeCount={project.likeCount}
-
-        initialViewCount={project.viewCount}
-
-      />
-
+      <FadeIn delay={0.09}>
+        <ProjectReactions
+          slug={project.slug}
+          initialLiked={project.hasLiked}
+          initialLikeCount={project.likeCount}
+          initialViewCount={project.viewCount}
+          mt="md"
+          mb="xl"
+        />
+      </FadeIn>
 
       {project.techStack.length > 0 && (
         <FadeIn delay={0.12}>
-          <Group gap={4} mb="md">
+          <Group gap="xs" mb="xl">
             {project.techStack.map((tech) => (
               <Badge key={tech} variant="light" size="sm">
                 {tech}

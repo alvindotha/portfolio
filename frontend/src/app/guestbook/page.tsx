@@ -26,7 +26,7 @@ export default async function GuestbookPage() {
       </FadeIn>
 
       <FadeIn delay={0.1}>
-        <GuestbookForm />
+        <GuestbookForm siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY} />
       </FadeIn>
 
       {/* Keyed on the newest entry: a fresh signature remounts the list so the

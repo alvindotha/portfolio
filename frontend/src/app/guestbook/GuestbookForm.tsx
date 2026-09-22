@@ -11,9 +11,14 @@ const Turnstile = dynamic(
   { ssr: false }
 );
 
-const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
-
-export function GuestbookForm() {
+/**
+ * The site key arrives as a prop, read by the server page at request time.
+ * Reading process.env here instead would inline it at BUILD time, so the
+ * container image would need rebuilding to add or rotate a key — and setting
+ * only the secret would leave the server demanding a token the browser never
+ * renders a widget to produce, rejecting every signature.
+ */
+export function GuestbookForm({ siteKey }: { siteKey?: string }) {
   const router = useRouter();
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');

@@ -89,11 +89,11 @@ export function HomeContent({
                 variant="gradient"
                 gradient={{ from: isLight ? 'gray.7' : 'gray.3', to: isLight ? 'gray.7' : 'gray.5' }}
               >
-                Thalvindo
+                Alvindo Tehmono
               </Text>
             </Title>
             <Text size="xl" c="dimmed" mt="md" maw={600} lh={1.6}>
-              Developer &amp; problem solver. I build clean, functional web applications.
+              Developer &amp; problem solver. I build functional applications.
             </Text>
             <Group mt="lg">
               <motion.div

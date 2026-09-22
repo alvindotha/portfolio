@@ -63,7 +63,7 @@ export function ProfileImage() {
           ) : (
             <Image
               src="/images/profile.jpg"
-              alt="Thalvindo"
+              alt="Alvindo Tehmono"
               width={size * 2}
               height={size * 2}
               priority
@@ -140,7 +140,7 @@ export function ProfileImage() {
               ) : (
                 <Image
                   src="/images/profile.jpg"
-                  alt="Thalvindo"
+                  alt="Alvindo Tehmono"
                   width={focusSize}
                   height={focusSize}
                   style={{

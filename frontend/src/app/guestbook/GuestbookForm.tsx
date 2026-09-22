@@ -98,7 +98,7 @@ export function GuestbookForm({ siteKey }: { siteKey?: string }) {
               // filled Button comes out near-white — which reads as disabled
               // rather than as the primary action. The accent palette exists in
               // the theme for exactly this, so the live button looks live.
-              color="accent"
+              color="teal.8"
               styles={{
                 root: {
                   // The theme's primary colour is a pale grey, so a normal

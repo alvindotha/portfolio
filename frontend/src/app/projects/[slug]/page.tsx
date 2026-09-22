@@ -40,6 +40,19 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
         </Title>
       </FadeIn>
 
+      <ProjectReactions
+
+        slug={project.slug}
+
+        initialLiked={project.hasLiked}
+
+        initialLikeCount={project.likeCount}
+
+        initialViewCount={project.viewCount}
+
+      />
+
+
       {project.techStack.length > 0 && (
         <FadeIn delay={0.12}>
           <Group gap={4} mb="md">
@@ -86,14 +99,6 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
         )}
       </FadeIn>
 
-      <FadeIn delay={0.3}>
-        <ProjectReactions
-          slug={project.slug}
-          initialLiked={project.hasLiked}
-          initialLikeCount={project.likeCount}
-          initialViewCount={project.viewCount}
-        />
-      </FadeIn>
     </Container>
   );
 }

@@ -34,6 +34,13 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
             })}
           </Text>
         </Group>
+
+        <PostReactions
+          slug={post.slug}
+          initialLiked={post.hasLiked}
+          initialLikeCount={post.likeCount}
+          initialViewCount={post.viewCount}
+        />
       </FadeIn>
 
       <FadeIn delay={0.16}>
@@ -45,14 +52,6 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         />
       </FadeIn>
 
-      <FadeIn delay={0.24}>
-        <PostReactions
-          slug={post.slug}
-          initialLiked={post.hasLiked}
-          initialLikeCount={post.likeCount}
-          initialViewCount={post.viewCount}
-        />
-      </FadeIn>
     </Container>
   );
 }

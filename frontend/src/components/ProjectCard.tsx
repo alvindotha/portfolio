@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, Text, Group, Badge, Anchor } from '@mantine/core';
-import { IconExternalLink, IconBrandGithub } from '@tabler/icons-react';
+import { IconExternalLink, IconBrandGithub, IconEye, IconHeart } from '@tabler/icons-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
@@ -10,11 +10,22 @@ interface ProjectCardProps {
   title: string;
   description: string;
   techStack: string[];
+  likeCount: number;
+  viewCount: number;
   projectUrl?: string;
   githubUrl?: string;
 }
 
-export function ProjectCard({ slug, title, description, techStack, projectUrl, githubUrl }: ProjectCardProps) {
+export function ProjectCard({
+  slug,
+  title,
+  description,
+  techStack,
+  projectUrl,
+  githubUrl,
+  likeCount,
+  viewCount,
+}: ProjectCardProps) {
   return (
     <motion.div
       whileHover={{ y: -4 }}
@@ -51,20 +62,35 @@ export function ProjectCard({ slug, title, description, techStack, projectUrl, g
           </Group>
         )}
 
-        <Group gap="sm">
-          <Anchor component={Link} href={`/projects/${slug}`} size="sm" c="dimmed">
-            Details &rarr;
-          </Anchor>
-          {projectUrl && (
-            <Anchor href={projectUrl} target="_blank" rel="noopener noreferrer" size="sm" c="dimmed">
-              <IconExternalLink size={14} />
+        <Group gap="sm" justify="space-between">
+          <Group gap="sm">
+            <Anchor component={Link} href={`/projects/${slug}`} size="sm" c="dimmed">
+              Details &rarr;
             </Anchor>
-          )}
-          {githubUrl && (
-            <Anchor href={githubUrl} target="_blank" rel="noopener noreferrer" size="sm" c="dimmed">
-              <IconBrandGithub size={14} />
-            </Anchor>
-          )}
+            {projectUrl && (
+              <Anchor href={projectUrl} target="_blank" rel="noopener noreferrer" size="sm" c="dimmed">
+                <IconExternalLink size={14} />
+              </Anchor>
+            )}
+            {githubUrl && (
+              <Anchor href={githubUrl} target="_blank" rel="noopener noreferrer" size="sm" c="dimmed">
+                <IconBrandGithub size={14} />
+              </Anchor>
+            )}
+          </Group>
+
+          {/* Same pair, same order as PostCard, so a card reads the same way
+              whichever listing you are on. */}
+          <Group gap="sm" c="dimmed">
+            <Group gap={4}>
+              <IconEye size={14} />
+              <Text size="xs">{viewCount}</Text>
+            </Group>
+            <Group gap={4}>
+              <IconHeart size={14} />
+              <Text size="xs">{likeCount}</Text>
+            </Group>
+          </Group>
         </Group>
       </Card>
     </motion.div>

@@ -78,10 +78,10 @@ export function HomeContent({
         transition={{ duration: 0.6, ease }}
         style={{ padding: '5rem 0' }}
       >
-        <Group align="center" gap="xl" wrap="nowrap">
+        <Group align="center" gap="xl" wrap="wrap" justify="center" style={{ textAlign: 'inherit' }}>
           <ProfileImage />
           <div>
-            <Title order={1} size="3.5rem" fw={700} lh={1.15}>
+            <Title order={1} fw={700} lh={1.15} style={{ fontSize: 'clamp(2.1rem, 9vw, 3.5rem)' }}>
               Hello, I&apos;m{' '}
               <Text
                 component="span"
@@ -92,7 +92,7 @@ export function HomeContent({
                 Alvindo Tehmono
               </Text>
             </Title>
-            <Text size="xl" c="dimmed" mt="md" maw={600} lh={1.6}>
+            <Text size="xl" c="dimmed" mt="md" maw={600} lh={1.6} style={{ minWidth: 0 }}>
               Developer &amp; problem solver. I build functional applications &mdash; and run them myself, on a home server in the next room.
             </Text>
             <Group mt="lg">

@@ -75,12 +75,26 @@ body {
   /* Screenshots are captured at 2x, so at full width they dominate the page and
      push the prose apart. Cap them well below the column and centre instead. */
   max-width: min(100%, 460px);
+  /* On a phone the column is narrower than the cap, so 100% wins and the
+     image sits flush to the text rather than overflowing it. */
   height: auto;
   border-radius: var(--mantine-radius-md);
   margin: 1.5rem auto;
 }
 .tiptap-content figure {
   margin: 1.5rem 0;
+}
+
+/* Long links and code strings are what usually push a phone layout sideways. */
+.tiptap-content a,
+.tiptap-content p,
+.tiptap-content li {
+  overflow-wrap: anywhere;
+}
+
+.tiptap-content pre {
+  overflow-x: auto;
+  max-width: 100%;
 }
 .tiptap-content figure img {
   margin: 0 auto 0.5rem;

@@ -55,7 +55,7 @@ export function Navbar() {
       }}
     >
       <Container size="lg" px="md">
-        <Group justify="space-between" h={56}>
+        <Group justify="space-between" mih={56} wrap="wrap" gap="xs" py={6}>
           <motion.div
             initial={{ opacity: 0, x: -12 }}
             animate={{ opacity: 1, x: 0 }}
@@ -70,7 +70,7 @@ export function Navbar() {
             </Anchor>
           </motion.div>
 
-          <Group gap="lg">
+          <Group gap="lg" wrap="wrap" style={{ rowGap: 4 }}>
             {links.map((link, i) => {
               const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
               return (

@@ -5,7 +5,7 @@ import {
 } from '@mantine/core';
 import { useMantineColorScheme } from '@mantine/core';
 import { motion, type Variants } from 'framer-motion';
-import { IconArrowRight, IconMail } from '@tabler/icons-react';
+import { IconArrowRight, IconMail, IconEye, IconHeart } from '@tabler/icons-react';
 import Link from 'next/link';
 import { ProfileImage } from '@/components/ProfileImage';
 import type {
@@ -282,7 +282,7 @@ export function HomeContent({
                         {project.description}
                       </Text>
                       {project.techStack.length > 0 && (
-                        <Group gap={4}>
+                        <Group gap={4} mb="sm">
                           {project.techStack.slice(0, 3).map((tech) => (
                             <Badge key={tech} variant="light" size="sm">
                               {tech}
@@ -290,6 +290,17 @@ export function HomeContent({
                           ))}
                         </Group>
                       )}
+                      {/* Same pair, same order as the projects listing. */}
+                      <Group gap="sm" c="dimmed">
+                        <Group gap={4}>
+                          <IconEye size={14} />
+                          <Text size="xs">{project.viewCount}</Text>
+                        </Group>
+                        <Group gap={4}>
+                          <IconHeart size={14} />
+                          <Text size="xs">{project.likeCount}</Text>
+                        </Group>
+                      </Group>
                     </Paper>
                   </Anchor>
                 </motion.div>

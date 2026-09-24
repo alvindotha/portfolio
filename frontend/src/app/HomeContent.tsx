@@ -93,7 +93,7 @@ export function HomeContent({
               </Text>
             </Title>
             <Text size="xl" c="dimmed" mt="md" maw={600} lh={1.6} style={{ minWidth: 0 }}>
-              Developer &amp; problem solver. I build functional applications &mdash; and run them myself, on a home server in the next room.
+              Forward Deployed Engineer. I work alongside the people who use the software, turn their problems into working systems.
             </Text>
             <Group mt="lg">
               <motion.div
